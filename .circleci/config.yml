@@ -1,0 +1,46 @@
+version: 2.1
+orbs:
+  ruby: circleci/ruby@0.1.2 
+
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.6.1-stretch-browsers
+    environment:
+      BUNDLE_PATH: ~/vendor/bundle
+    executor: ruby/default
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - rubygems-v1-{{ checksum "Gemfile.lock" }}
+            - v1-gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+            - v1-gem-cache-{{ arch }}-{{ .Branch }}-
+            - v1-gem-cache-{{ arch }}-
+      - run:
+          name: install dependencies
+          command: |
+            gem update --system
+            gem install bundler
+      - run:
+          name: Bundle Install
+          command: bundle check || bundle install
+      - save_cache:
+          key: v1-gem-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+          paths:
+            - ~/vendor/bundle
+      - run:
+          name: Jekyll build
+          command: bundle exec jekyll build --config _config.yml,_config_circleci.yml
+      - run:
+          command: |
+            cp -R _site riot-os.org
+      - store_artifacts:
+          path: riot-os.org
+          destination: /riot-os.org
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
