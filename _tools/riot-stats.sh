@@ -1,34 +1,28 @@
 #!/bin/bash
 
-RIOTCODE="https://github.com/RIOT-OS/RIOT.git"
-GITWORKSPACE="_RIOT"
+# Parse RIOT statistics and dump them
+#
+# Usage:
+#  $ ./riot-stats.sh repo
+# * repo: path to RIOT's repository
 
 CDIR=`pwd`
-
-gitupdate () {
-  if [ -d $GITWORKSPACE ]; then
-    cd $GITWORKSPACE
-    git pull
-  else 
-    git clone $RIOTCODE $GITWORKSPACE
-  fi
-  cd - > /dev/null
-}
+RIOTBASE=$1
 
 countboards () {
-  cd $GITWORKSPACE
+  cd $RIOTBASE
   make info-boards | tr " " "\n" | wc -l | xargs printf "boards: %d\n" 
   cd - > /dev/null
 }
 
 countcpus () {
-  cd $GITWORKSPACE
+  cd $RIOTBASE
   git grep "config CPU_FAM_" | grep "Kconfig" | wc -l | xargs printf "cpus: %d\n"
   cd - > /dev/null
 }
 
 countcommits () {
-  cd $GITWORKSPACE
+  cd $RIOTBASE
   git rev-list --count master | xargs printf "commits: %d\n" 
   cd - > /dev/null
 }
@@ -37,8 +31,6 @@ contributors () {
   echo
 }
 
-gitupdate
 countboards
 countcpus
 countcommits
-
