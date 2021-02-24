@@ -30,6 +30,11 @@ jobs:
           paths:
             - ~/vendor/bundle
       - run:
+          name: Update RIOT data
+          command: make update_riot_board_list update_riot_stats
+          environment:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run:
           name: Jekyll build
           command: bundle exec jekyll build --config _config.yml,.circleci/_jekyll_circleci_config.yml
       - run:
