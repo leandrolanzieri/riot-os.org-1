@@ -1,1 +1,2 @@
 baseurl: "/0/riot-os.org"
+environment: "production"

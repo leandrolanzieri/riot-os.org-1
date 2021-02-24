@@ -31,7 +31,7 @@ jobs:
             - ~/vendor/bundle
       - run:
           name: Jekyll build
-          command: bundle exec jekyll build --config _config.yml,_config_circleci.yml
+          command: bundle exec jekyll build --config _config.yml,.circleci/_jekyll_circleci_config.yml
       - run:
           command: |
             cp -R _site riot-os.org
