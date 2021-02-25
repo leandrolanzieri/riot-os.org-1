@@ -1,5 +1,4 @@
 title: test
-baseurl: "/"
 sass:
     sass_dir: _sass
 collections:
