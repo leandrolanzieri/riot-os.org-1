@@ -1,0 +1,49 @@
+name: Surge PR Preview
+
+on:
+  pull_request:
+    # when using teardown: 'true', add default event types + closed event type
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Update RIOT data
+        run: make update_riot_data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Use GitHub Actions' cache to shorten build times and decrease load on servers
+      - uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile') }}
+          restore-keys: ${{ runner.os }}-gems-
+
+      - name: Build
+        uses: jerryjvl/jekyll-build-action@v1
+
+      - uses: afc163/surge-preview@v1
+        id: preview_step
+        with:
+          surge_token: ${{ secrets.SURGE_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dist: _site
+          build: |
+            true
+
+      - name: 'Comment URL'
+        uses: actions/github-script@0.3.0
+        if: github.event_name == 'pull_request'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue: { number: pr_number }, repo: { owner, repo }  } = context;
+            const formatted_owner = owner.replace(/\./g, '-').toLowerCase();
+            const formatted_repo = repo.replace(/\./g, '-').toLowerCase();
+            const url = `https://${formatted_owner}-${formatted_repo}-preview-pr-${pr_number}.surge.sh`;
+            github.issues.createComment({ owner, repo, issue_number: pr_number, body: `Preview available [here](${url})` });
