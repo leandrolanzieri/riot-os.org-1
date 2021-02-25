@@ -22,7 +22,8 @@ jobs:
           command: |
             gem update --system
             gem install bundler
-            apt install pip
+            sudo apt-get -y -qq update
+            sudo apt-get install python3-pip python3-dev
       - run:
           name: Bundle Install
           command: bundle check || bundle install
