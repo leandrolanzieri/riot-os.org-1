@@ -33,7 +33,9 @@ jobs:
             - ~/vendor/bundle
       - run:
           name: Update RIOT data
-          command: make update_riot_data
+          command: |
+            ls _tools
+            make update_riot_data
           environment:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run:
