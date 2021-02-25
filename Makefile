@@ -30,6 +30,6 @@ update_riot_board_list: update_riot_repo
 	@$(TOOLS_DIR)/riot-boards.sh $(RIOTBASE) > $(RIOT_BOARDS_FILE)
 
 update_riot_contributors: install_python_requirements
-	@$(TOOLS_DIR)/riot-contributors.py > $(RIOT_CONTRIBUTORS_FILE)
+	$(TOOLS_DIR)/riot-contributors.py > $(RIOT_CONTRIBUTORS_FILE)
 
 update_riot_data: update_riot_contributors update_riot_board_list update_riot_stats;
