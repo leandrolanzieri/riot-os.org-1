@@ -23,7 +23,7 @@ if __name__ == "__main__":
         data = json.loads(request.content)
 
         if request.status_code != requests.codes.ok:
-            print(request)
+            sys.stdout.write(request)
             sys.exit("Github API status code != OK")
 
         if len(data) == 0:
