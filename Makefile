@@ -3,8 +3,8 @@
 
 RIOT_REPO_URL = "https://github.com/RIOT-OS/RIOT.git"
 
-TOOLS_DIR = _tools
-DATA_DIR = _data
+TOOLS_DIR = $(abspath _tools)
+DATA_DIR = $(abspath _data)
 _DEFAULT_RIOTBASE = $(abspath _RIOT)
 RIOTBASE ?= $(_DEFAULT_RIOTBASE)
 
